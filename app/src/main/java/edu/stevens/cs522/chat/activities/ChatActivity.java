@@ -295,6 +295,8 @@ public class ChatActivity extends AppCompatActivity implements ChatroomsFragment
     public void onServiceConnected(ComponentName name, IBinder service) {
         Log.d(TAG, "Connected to the chat service.");
         // TODO initialize chatService
+        ChatService.ChatBinder binder = (ChatService.ChatBinder) service;
+        chatService = binder.getService();
 
     }
 

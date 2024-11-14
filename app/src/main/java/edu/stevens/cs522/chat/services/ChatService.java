@@ -86,6 +86,9 @@ public class ChatService extends Service implements IChatService {
         }
 
         // TODO initialize the thread that sends messages
+        HandlerThread handlerThread = new HandlerThread(SEND_TAG, Process.THREAD_PRIORITY_BACKGROUND);
+        handlerThread.start();
+        sendHandler = new SendHandler(handlerThread.getLooper());
 
         // end TODO
 
@@ -121,9 +124,23 @@ public class ChatService extends Service implements IChatService {
     @Override
     public void send(String destAddress, String chatRoom, String messageText,
                      Instant timestamp, double latitude, double longitude, ResultReceiver receiver) {
+        //message obtained for the handler
         android.os.Message message = sendHandler.obtainMessage();
         // TODO send the message to the sending thread (add a bundle with params)
 
+        //Prep data in bundle
+
+        Bundle bundle = new Bundle();
+        bundle.putString(SendHandler.HDLR_DEST_ADDRESS, destAddress);
+        bundle.putString(SendHandler.HDLR_CHATROOM, chatRoom);
+        bundle.putString(SendHandler.HDLR_MESSAGE_TEXT, messageText);
+        bundle.putSerializable(SendHandler.HDLR_TIMESTAMP, timestamp);
+        bundle.putDouble(SendHandler.HDLR_LATITUDE, latitude);
+        bundle.putDouble(SendHandler.HDLR_LONGITUDE, longitude);
+        bundle.putParcelable(SendHandler.HDLR_RECEIVER, receiver);
+
+        message.setData(bundle);
+        sendHandler.sendMessage(message);
     }
 
 
@@ -166,7 +183,13 @@ public class ChatService extends Service implements IChatService {
                 Bundle data = message.getData();
 
                 // TODO get data from message (including result receiver)
-
+                destinationAddr = data.getString(HDLR_DEST_ADDRESS);
+                chatRoom = data.getString(HDLR_CHATROOM);
+                messageText = data.getString(HDLR_MESSAGE_TEXT);
+                timestamp = (Instant)data.getSerializable(HDLR_TIMESTAMP);
+                latitude = data.getDouble(HDLR_LATITUDE);
+                longitude= data.getDouble(HDLR_LONGITUDE);
+                receiver = data.getParcelable(HDLR_RECEIVER);
 
 
                 // End todo
