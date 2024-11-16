@@ -144,9 +144,16 @@ public class ChatActivity extends AppCompatActivity implements ChatroomsFragment
             callback = new OnBackPressedCallback(true){
                 @Override
                 public void handleOnBackPressed(){
-                    sharedViewModel.select(null);
+                    if (sharedViewModel.getSelected()==null){
+                        setEnabled(false);
+                        ChatActivity.super.onBackPressed();
+                    }
+                    else{
+                        sharedViewModel.select(null);
+                    }
                 }
             };
+            getOnBackPressedDispatcher().addCallback(this,callback);
         } else {
             // Add an index fragment as the fragment in the frame layout (single-pane layout)
             getSupportFragmentManager()

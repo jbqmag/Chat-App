@@ -63,9 +63,9 @@ public class ViewPeerActivity extends FragmentActivity {
         TextView peerTimestamp = findViewById(R.id.view_timestamp);
         TextView peerLocation = findViewById(R.id.view_location);
 
-        peerName.setText(peer.name);
-        peerTimestamp.setText(formatTimestamp(peer.timestamp));
-        peerLocation.setText(String.format("Latitude: %s, Longitude: %s", peer.latitude, peer.longitude));
+        peerName.setText(getString(R.string.view_user_name, peer.name));
+        peerTimestamp.setText(getString(R.string.view_timestamp, formatTimestamp(peer.timestamp)));
+        peerLocation.setText(getString(R.string.view_location, peer.latitude, peer.longitude));
 
 
         // Initialize the recyclerview and adapter for messages
